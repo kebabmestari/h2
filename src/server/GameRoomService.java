@@ -21,6 +21,14 @@ public class GameRoomService {
         return false;
     }
 
+    public static void closeRoom(GameRoom gr) {
+        gr.
+    }
+
+    public static List<GameRoom> getRooms() {
+        return rooms;
+    }
+
     private static void addRoom(GameRoom room) {
         rooms.add(room);
     }
@@ -34,6 +42,7 @@ public class GameRoomService {
         newRoom.setBoardSize(boardSize);
         rooms.add(newRoom);
         System.out.println("Created new game room " + name);
+        return newRoom;
     }
 
 }

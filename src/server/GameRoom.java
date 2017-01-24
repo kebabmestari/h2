@@ -1,6 +1,7 @@
 package server;
 
 import java.util.ArrayList;
+import java.util.Arrays;
 import java.util.List;
 
 /**
@@ -23,6 +24,12 @@ public class GameRoom {
 
     private int boardSize = 3;
 
+    // game board status
+    // 0 empty
+    // 1 X
+    // 2 0
+    private int[][] board;
+
     GameRoom() {
     }
 
@@ -39,10 +46,13 @@ public class GameRoom {
             System.err.println("Player " + player.getName() + " tried to connect a full room");
             return;
         }
+        System.out.println("Player " + player.getName() + " connected to " + name);
         players.add(player);
         // when enough players have joined, start the game
         if(players.size() == MAXPLAYERS) {
+            System.out.println("Room " + name + " filled, initializing new game");
             status = GameRoomStatus.INGAME;
+            initGame();
         }
     }
 
@@ -50,8 +60,14 @@ public class GameRoom {
      * Initialize the game
      */
     private void initGame() {
-
+        // initialize the game board with 0
+        board = new int[boardSize][boardSize];
+        for(int[] r1 : board) {
+            Arrays.fill(r1, 0);
+        }
     }
+
+    public
 
     public String getName() {
         return name;
