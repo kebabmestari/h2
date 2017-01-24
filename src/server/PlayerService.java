@@ -1,7 +1,9 @@
 package server;
 
 import java.util.ArrayList;
+import java.util.HashMap;
 import java.util.List;
+import java.util.Map;
 import java.util.concurrent.atomic.AtomicBoolean;
 
 /**
@@ -9,8 +11,8 @@ import java.util.concurrent.atomic.AtomicBoolean;
  */
 public class PlayerService {
 
-    // player repository
-    private static List<Player> players = new ArrayList<>();
+    // player repository, maps to the game they are in
+    private static Map<Player, GameRoom> players = new HashMap<Player, GameRoom>();
 
     /**
      * Check if player of given name already exists
@@ -28,7 +30,7 @@ public class PlayerService {
      * @return Player object or null if does not exists
      */
     public static Player getPlayer(String name) {
-        for(Player p : players) {
+        for(Player p : players.keySet()) {
             if(p.getName().equals(name)) return p;
         }
         return null;
@@ -43,10 +45,19 @@ public class PlayerService {
 
     /**
      * Add a new player
-     * @param name player name
+     * @param player
      */
     private static void addPlayer(Player player) {
-        players.add(player);
+        players.put(player, null);
+    }
+
+    /**
+     * Set player room
+     * @param player
+     * @param room
+     */
+    private static void setPlayerRoom(Player player, GameRoom room) {
+        players.put(player, room);
     }
 
     public static Player createPlayer(String name) {
@@ -57,5 +68,6 @@ public class PlayerService {
         Player newPlayer = new Player();
         newPlayer.setName(name);
         addPlayer(newPlayer);
+        return newPlayer;
     }
 }

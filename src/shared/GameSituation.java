@@ -6,20 +6,25 @@ import java.io.Serializable;
  * Created by adminpc on 24/1/2017.
  */
 public class GameSituation implements Serializable {
+
     // is the current player in turn
     boolean inTurn;
     // is the game over
     boolean isOver;
-    // is the current player the winner
-    boolean isVictorious;
-    // did the game end in stalemate
-    boolean isStalemate;
 
-    public GameSituation(boolean inTurn, boolean isOver, boolean isVictorious, boolean isStalemate) {
+    /**
+     * Ending sitation
+     * 0 invalid ending, the other player disconnected etc
+     * 1 you won
+     * 2 the other player won
+     * 3 stalemate
+     */
+    int endSituation;
+
+    public GameSituation(boolean inTurn, boolean isOver, int sitation) {
         this.inTurn = inTurn;
         this.isOver = isOver;
-        this.isVictorious = isVictorious;
-        this.isStalemate = isStalemate;
+        this.endSituation = situation;
         System.out.println("Created a gamesituation object");
     }
 

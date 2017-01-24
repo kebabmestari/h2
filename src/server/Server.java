@@ -1,12 +1,29 @@
+import server.CommunicationImpl;
 import server.GameRoom;
 import server.GameRoomService;
+import shared.Communication;
 
+import java.net.MalformedURLException;
+import java.rmi.Naming;
+import java.rmi.RemoteException;
 import java.util.List;
 import java.util.Scanner;
 
 public class Server {
+
     public static void main(String[] args) {
         System.out.println("Server software");
+
+        System.out.println("Binding RMI");
+        try {
+            CommunicationImpl comm = new CommunicationImpl();
+            Naming.rebind("comm", comm);
+        } catch (RemoteException e) {
+            e.printStackTrace();
+        } catch (MalformedURLException e) {
+            e.printStackTrace();
+        }
+
         System.out.println("q quit, n new room");
         Scanner cin = new Scanner(System.in);
         String text = "";

@@ -7,6 +7,9 @@ import java.util.Random;
  * Created by adminpc on 24/1/2017.
  */
 public class GameLogicService {
+
+    public static int MAXPLAYERS = 2;
+
     /**
      * Get the starting player id
      * @return 0 or 1
@@ -18,5 +21,4 @@ public class GameLogicService {
         return result;
     }
 
-    public static
 }

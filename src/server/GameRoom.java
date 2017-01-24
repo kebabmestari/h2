@@ -65,6 +65,7 @@ public class GameRoom {
         for(int[] r1 : board) {
             Arrays.fill(r1, 0);
         }
+        activePlayer = players.get(GameLogicService.getStartingPlayer());
     }
 
     public
