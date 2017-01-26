@@ -1,5 +1,7 @@
 package server;
 
+import shared.ClientCommunication;
+
 import java.util.ArrayList;
 import java.util.HashMap;
 import java.util.List;
@@ -60,13 +62,14 @@ public class PlayerService {
         players.put(player, room);
     }
 
-    public static Player createPlayer(String name) {
+    public static Player createPlayer(int id, String name, ClientCommunication comm, GameRoom gr) {
         if(playerExists(name)) {
             System.err.println("Trying to create player named " + name + " failed. Exists already.");
             return null;
         }
         Player newPlayer = new Player();
         newPlayer.setName(name);
+        newPlayer.setComm(comm);
         addPlayer(newPlayer);
         return newPlayer;
     }

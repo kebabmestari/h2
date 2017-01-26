@@ -1,7 +1,6 @@
-import server.CommunicationImpl;
+import server.ServerCommunicationImpl;
 import server.GameRoom;
 import server.GameRoomService;
-import shared.Communication;
 
 import java.net.MalformedURLException;
 import java.rmi.Naming;
@@ -16,7 +15,7 @@ public class Server {
 
         System.out.println("Binding RMI");
         try {
-            CommunicationImpl comm = new CommunicationImpl();
+            ServerCommunicationImpl comm = new ServerCommunicationImpl();
             Naming.rebind("comm", comm);
         } catch (RemoteException e) {
             e.printStackTrace();
