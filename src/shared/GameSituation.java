@@ -1,34 +1,23 @@
 package shared;
 
-import java.io.Serializable;
-
 /**
- * Created by adminpc on 24/1/2017.
+ * Enumeration which represents game ending sitation
+ * and the related integer code
+ * Created by samlinz on 26.1.2017.
  */
-public class GameSituation implements Serializable {
+public enum GameSituation {
+    TERMINATION(-1),
+    STALEMATE(0),
+    YOU_WON(1),
+    YOU_LOST(2);
 
-    // is the current player in turn
-    boolean inTurn;
-    // is the game over
-    boolean isOver;
+    private int code;
 
-    /**
-     * Ending sitation
-     * 0 invalid ending, the other player disconnected etc
-     * 1 you won
-     * 2 the other player won
-     * 3 stalemate
-     */
-    int endSituation;
-
-    public GameSituation(boolean inTurn, boolean isOver, int sitation) {
-        this.inTurn = inTurn;
-        this.isOver = isOver;
-        this.endSituation = situation;
-        System.out.println("Created a gamesituation object");
+    GameSituation(int code) {
+        this.code = code;
     }
 
-    public GameSituation(boolean inTurn) {
-        this(inTurn, false, false, false);
+    public int getCode() {
+        return code;
     }
 }

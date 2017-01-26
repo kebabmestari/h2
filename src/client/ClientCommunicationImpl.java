@@ -14,6 +14,10 @@ public class ClientCommunicationImpl extends UnicastRemoteObject implements Clie
 
     public static final String MSG_YOURTURN = "Your turn";
 
+    public ClientCommunicationImpl() throws RemoteException {
+        System.out.println("Remote client object created");
+    }
+
     @Override
     public void informTurn() throws RemoteException {
         RenderService.renderMessage(MSG_YOURTURN);
@@ -26,7 +30,30 @@ public class ClientCommunicationImpl extends UnicastRemoteObject implements Clie
     }
 
     @Override
-    public void passGameEnd(int code) throws RemoteException {
-
+    public void passCode(int code) throws RemoteException {
+        switch (code) {
+            case -1:
+                System.out.println("Game terminated");
+                Client.exit(0);
+                break;
+            case 0:
+                System.out.println("Game ends in STALEMATE");
+                Client.exit(0);
+                break;
+            case 1:
+                System.out.println("Game ends in YOUR VICTORY");
+                Client.exit(0);
+                break;
+            case 2:
+                System.out.println("Game ends in YOUR LOSS");
+                Client.exit(0);
+                break;
+            case 10:
+                System.out.println("Game starts!");
+                Client.setGameOn(true);
+                break;
+            default:
+                System.err.println("Received invalid game sitation " + code);
+        }
     }
 }

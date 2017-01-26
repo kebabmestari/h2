@@ -39,7 +39,22 @@ public class PlayerService {
     }
 
     /**
-     * Remove player from repo, in case of player disconnnecting and such
+     * Get players in given room
+     * @param gr GameRoom object
+     * @return ArrayList of Player objects
+     */
+    public static List<Player> getPlayersInRoom(GameRoom gr) {
+        List<Player> result = new ArrayList<>();
+        for(Player plr : players.keySet()) {
+            if(((GameRoom)players.get(plr)).equals(gr)) {
+                result.add(plr);
+            }
+        }
+        return result;
+    }
+
+    /**
+     * Remove player from repo, in case of player disconnecting and such
      */
     public static void removePlayer(Player player) {
         players.remove(player);
@@ -62,7 +77,7 @@ public class PlayerService {
         players.put(player, room);
     }
 
-    public static Player createPlayer(int id, String name, ClientCommunication comm, GameRoom gr) {
+    public static Player createPlayer(String name, ClientCommunication comm, GameRoom gr) {
         if(playerExists(name)) {
             System.err.println("Trying to create player named " + name + " failed. Exists already.");
             return null;
@@ -71,6 +86,7 @@ public class PlayerService {
         newPlayer.setName(name);
         newPlayer.setComm(comm);
         addPlayer(newPlayer);
+        gr.addPlayer(newPlayer);
         return newPlayer;
     }
 }

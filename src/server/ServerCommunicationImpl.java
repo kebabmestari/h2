@@ -13,6 +13,10 @@ import java.util.List;
  */
 public class ServerCommunicationImpl extends UnicastRemoteObject implements ServerCommunication {
 
+    public ServerCommunicationImpl() throws RemoteException {
+        System.out.println("Remote server object created");
+    }
+
     /**
      * Return list of open rooms
      * @return String array of names of the open game rooms

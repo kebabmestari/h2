@@ -12,7 +12,13 @@ public class RenderService {
      * Render the game sitation
      */
     public static void renderBoard() {
-
+        int[][] board = Client.getBoard();
+        for (int y = 0; y < board.length; y++) {
+            for (int x = 0; x < board[0].length; x++) {
+                System.out.print(" | " + board[y][x]);
+            }
+            System.out.print("\n");
+        }
     }
 
     /**
@@ -27,7 +33,7 @@ public class RenderService {
         String [] msg = new String[]
                 {
                         horBar.toString(),
-                        MSGC + " " + message + " " + MMSGC,
+                        MSGC + " " + message + " " + MSGC,
                         horBar.toString()
                 };
         for(String str : msg) {

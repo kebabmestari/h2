@@ -1,5 +1,8 @@
 package server;
 
+import shared.GameSituation;
+
+import java.rmi.RemoteException;
 import java.util.ArrayList;
 import java.util.List;
 import java.util.concurrent.atomic.AtomicReference;
@@ -37,8 +40,17 @@ public class GameRoomService {
      * Close room
      * @param gr
      */
-    public static void closeRoom(GameRoom gr) {
-        GameRoomService.informOfClosure(gr);
+    public static void closeRoom(GameRoom gr, GameSituation code) {
+        System.out.println("Terminating room " + gr.getName() + ".");
+        System.out.println("Reson: " + code.getCode());
+        PlayerService.getPlayersInRoom(gr).forEach((plr) -> {
+            try {
+                plr.getComm().passCode(code.getCode());
+            } catch (RemoteException e) {
+                e.printStackTrace();
+            }
+        });
+        removeRoom(gr);
     }
 
     /**
