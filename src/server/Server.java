@@ -3,8 +3,7 @@ package server;
 import shared.GameSituation;
 
 import java.net.MalformedURLException;
-import java.rmi.Naming;
-import java.rmi.RemoteException;
+import java.rmi.*;
 import java.util.List;
 import java.util.Scanner;
 
@@ -51,10 +50,11 @@ public class Server {
      */
     private static void newRoom(Scanner cin) {
         System.out.println("Give name for a new room: ");
-        String newRoomName = "unnamed";
+        String newRoomName = null;
         // poll for room name until an unique name is given
-        while (!newRoomName.equals("unnamed") || GameRoomService.roomExists(newRoomName)) {
+        while (true) {
             newRoomName = cin.next();
+            if(!GameRoomService.roomExists(newRoomName)) break;
         }
         int boardSize = 0;
         System.out.println("Board size w x h");
@@ -77,10 +77,11 @@ public class Server {
      * Print the active rooms in the system
      */
     private static void printRooms() {
-        System.out.println("Rooms open:");
+        System.out.println("\nRooms open:");
         final List<GameRoom> rooms = GameRoomService.getRooms();
         for (GameRoom gr : rooms) {
-            System.out.println(gr.getName() + " Players " + gr.getPlayerCount());
+            System.out.println(gr.getName() + ", players " + gr.getPlayerCount());
         }
+        System.out.print("\n");
     }
 }

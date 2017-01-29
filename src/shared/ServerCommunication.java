@@ -1,7 +1,7 @@
 package shared;
 
-import java.rmi.Remote;
-import java.rmi.RemoteException;
+import java.rmi.*;
+import java.util.List;
 
 /**
  * ServerCommunication interface, the remote interface which
@@ -10,11 +10,14 @@ import java.rmi.RemoteException;
  */
 public interface ServerCommunication extends Remote {
 
-    String[] requestOpenRooms() throws RemoteException;
+    List<String> requestOpenRooms() throws RemoteException;
 
     // join a game room
     boolean joinRoom(ClientCommunication client, String plrname, String roomname) throws RemoteException;
 
     // close connection to server
     void closeConnection(String plrname) throws RemoteException;
+
+    // make move
+    boolean makeMove(String plrname, int[] coords) throws RemoteException;
 }

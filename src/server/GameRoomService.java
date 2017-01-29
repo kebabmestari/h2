@@ -42,10 +42,10 @@ public class GameRoomService {
      */
     public static void closeRoom(GameRoom gr, GameSituation code) {
         System.out.println("Terminating room " + gr.getName() + ".");
-        System.out.println("Reson: " + code.getCode());
+        System.out.println("Reason: " + code.getCode());
         PlayerService.getPlayersInRoom(gr).forEach((plr) -> {
             try {
-                plr.getComm().passCode(code.getCode());
+                plr.getComm().passCode(code);
             } catch (RemoteException e) {
                 e.printStackTrace();
             }

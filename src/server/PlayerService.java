@@ -6,7 +6,6 @@ import java.util.ArrayList;
 import java.util.HashMap;
 import java.util.List;
 import java.util.Map;
-import java.util.concurrent.atomic.AtomicBoolean;
 
 /**
  * Created by adminpc on 21/1/2017.
@@ -36,6 +35,10 @@ public class PlayerService {
             if(p.getName().equals(name)) return p;
         }
         return null;
+    }
+
+    public static GameRoom getPlayerRoom(Player player) {
+        return players.get(player);
     }
 
     /**

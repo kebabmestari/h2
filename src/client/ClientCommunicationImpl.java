@@ -1,6 +1,7 @@
 package client;
 
 import shared.ClientCommunication;
+import shared.GameSituation;
 
 import java.rmi.RemoteException;
 import java.rmi.server.UnicastRemoteObject;
@@ -21,6 +22,7 @@ public class ClientCommunicationImpl extends UnicastRemoteObject implements Clie
     @Override
     public void informTurn() throws RemoteException {
         RenderService.renderMessage(MSG_YOURTURN);
+        Client.setTurn(true);
     }
 
     @Override
@@ -29,9 +31,12 @@ public class ClientCommunicationImpl extends UnicastRemoteObject implements Clie
         RenderService.renderBoard();
     }
 
+
+
     @Override
-    public void passCode(int code) throws RemoteException {
-        switch (code) {
+    public void passCode(GameSituation code) throws RemoteException {
+        int codeInt = code.getCode();
+        switch (codeInt) {
             case -1:
                 System.out.println("Game terminated");
                 Client.exit(0);
@@ -55,5 +60,14 @@ public class ClientCommunicationImpl extends UnicastRemoteObject implements Clie
             default:
                 System.err.println("Received invalid game sitation " + code);
         }
+    }
+
+    /**
+     * Pass the side code to the player
+     * @throws RemoteException
+     */
+    @Override
+    public void giveSide(int side) throws RemoteException {
+        Client.setSide(side);
     }
 }

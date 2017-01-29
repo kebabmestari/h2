@@ -19,5 +19,7 @@ public interface ClientCommunication extends Remote {
     // 1 you won
     // 2 the other player won
     // 10 the game started
-    void passCode(int code) throws RemoteException;
+    void passCode(GameSituation code) throws RemoteException;
+
+    void giveSide(int side) throws RemoteException;
 }

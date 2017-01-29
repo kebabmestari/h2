@@ -9,7 +9,8 @@ public enum GameSituation {
     TERMINATION(-1),
     STALEMATE(0),
     YOU_WON(1),
-    YOU_LOST(2);
+    YOU_LOST(2),
+    GAME_START(10);
 
     private int code;
 

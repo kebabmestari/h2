@@ -81,7 +81,30 @@ public class GameRoom {
         for(int[] r1 : board) {
             Arrays.fill(r1, 0);
         }
+        players.forEach((plr) -> {
+            try {
+                plr.getComm().passCode(GameSituation.GAME_START);
+            } catch (RemoteException e) {
+                e.printStackTrace();
+            }
+        });
         activePlayer = players.get(GameLogicService.getStartingPlayer());
+        try {
+            activePlayer.getComm().giveSide(0);
+            players.forEach((plr)->{
+                if(plr != activePlayer) {
+                    try {
+                        plr.getComm().giveSide(1);
+                    } catch (RemoteException e) {
+                        e.printStackTrace();
+                    }
+                }
+            });
+        } catch (RemoteException e) {
+            e.printStackTrace();
+        }
+        sendBoard();
+        sendTurn();
     }
 
     /**
@@ -110,6 +133,42 @@ public class GameRoom {
             GameRoomService.closeRoom(this, GameSituation.TERMINATION);
             status = GameRoomStatus.DONE;
         }
+    }
+
+    /**
+     * Get a piece status from coordinates
+     * @param x x coordinate
+     * @param y y coordinate
+     * @return 0, 1, 2 representing the status
+     */
+    public int getPiece(int x, int y) {
+        if((x < 0) || (y < 0) || (x >= board[0].length) || (y >= board.length)) {
+            System.err.println("Invalid coordinates " + x + " " + y);
+            return -1;
+        }
+        return board[y][x];
+    }
+
+    /**
+     * Set a board piece to a number
+     * @param x
+     * @param y
+     * @param code
+     * @return
+     */
+    public boolean setPiece(int x, int y, int code) {
+        if(getPiece(x, y) == 0) {
+            if(code > 0 && code < 3) {
+                board[y][x] = code;
+                System.out.println(name + ": move " + code + " at " + x + "," + y);
+                changeTurn();
+                sendBoard();
+                sendTurn();
+            }
+        } else {
+            return false;
+        }
+        return true;
     }
 
     /**
