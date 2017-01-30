@@ -3,7 +3,8 @@ package server;
 import shared.GameSituation;
 
 import java.net.MalformedURLException;
-import java.rmi.*;
+import java.rmi.Naming;
+import java.rmi.RemoteException;
 import java.util.List;
 import java.util.Scanner;
 
@@ -54,7 +55,7 @@ public class Server {
         // poll for room name until an unique name is given
         while (true) {
             newRoomName = cin.next();
-            if(!GameRoomService.roomExists(newRoomName)) break;
+            if (!GameRoomService.roomExists(newRoomName)) break;
         }
         int boardSize = 0;
         System.out.println("Board size w x h");

@@ -55,6 +55,7 @@ public class GameRoom {
     /**
      * Add a player to the game and start the game if the
      * room was filled
+     *
      * @param player player object
      */
     void addPlayer(Player player) {
@@ -65,7 +66,7 @@ public class GameRoom {
         System.out.println("Player " + player.getName() + " connected to " + name);
         players.add(player);
         // when enough players have joined, start the game
-        if(players.size() == MAXPLAYERS) {
+        if (players.size() == MAXPLAYERS) {
             System.out.println("Room " + name + " filled, initializing new game");
             status = GameRoomStatus.INGAME;
             initGame();
@@ -78,7 +79,7 @@ public class GameRoom {
     private void initGame() {
         // initialize the game board with 0
         board = new int[boardSize][boardSize];
-        for(int[] r1 : board) {
+        for (int[] r1 : board) {
             Arrays.fill(r1, 0);
         }
         players.forEach((plr) -> {
@@ -91,8 +92,8 @@ public class GameRoom {
         activePlayer = players.get(GameLogicService.getStartingPlayer());
         try {
             activePlayer.getComm().giveSide(0);
-            players.forEach((plr)->{
-                if(plr != activePlayer) {
+            players.forEach((plr) -> {
+                if (plr != activePlayer) {
                     try {
                         plr.getComm().giveSide(1);
                     } catch (RemoteException e) {
@@ -137,12 +138,13 @@ public class GameRoom {
 
     /**
      * Get a piece status from coordinates
+     *
      * @param x x coordinate
      * @param y y coordinate
      * @return 0, 1, 2 representing the status
      */
     public int getPiece(int x, int y) {
-        if((x < 0) || (y < 0) || (x >= board[0].length) || (y >= board.length)) {
+        if ((x < 0) || (y < 0) || (x >= board[0].length) || (y >= board.length)) {
             System.err.println("Invalid coordinates " + x + " " + y);
             return -1;
         }
@@ -150,15 +152,19 @@ public class GameRoom {
     }
 
     /**
-     * Set a board piece to a number
+     * Set a board piece to a number and check the game status
+     *
      * @param x
      * @param y
      * @param code
      * @return
      */
     public boolean setPiece(int x, int y, int code) {
-        if(getPiece(x, y) == 0) {
-            if(code > 0 && code < 3) {
+
+        if(!(status == GameRoomStatus.INGAME)) return false;
+
+        if (getPiece(x, y) == 0) {
+            if (code > 0 && code < 3) {
                 board[y][x] = code;
                 System.out.println(name + ": move " + code + " at " + x + "," + y);
                 changeTurn();
@@ -168,6 +174,27 @@ public class GameRoom {
         } else {
             return false;
         }
+            int state = GameLogicService.getWinner(board);
+        if (state == 1 || state == 2){
+            try {
+                players.get(0).getComm().passCode(GameSituation.YOU_WON);
+                players.get(1).getComm().passCode(GameSituation.YOU_LOST);
+            } catch (RemoteException e) {
+                e.printStackTrace();
+            }
+        } else if (state == 3) {
+                players.forEach((plr) -> {
+                    try {
+                        plr.getComm().passCode(GameSituation.STALEMATE);
+                    } catch (RemoteException e) {
+                        e.printStackTrace();
+                    }
+                });
+        }
+        // game ended
+        if(state > 0) {
+            status = GameRoomStatus.DONE;
+        }
         return true;
     }
 
@@ -176,8 +203,8 @@ public class GameRoom {
      */
     private void changeTurn() {
         Player nonactive = null;
-        for(Player plr : players) {
-            if(plr != activePlayer) {
+        for (Player plr : players) {
+            if (plr != activePlayer) {
                 nonactive = plr;
                 break;
             }

@@ -21,4 +21,24 @@ public class GameLogicService {
         return result;
     }
 
+    /**
+     * Check for game state and see if the
+     * game has ended
+     * @return 0 if not ended, 1 or 2 represent the winner and 3 is stalemate
+     */
+    public static int getWinner(int[][] board) {
+
+        for (int y = 0; y < board.length; y++) {
+            for (int x = 0; x < board[0].length; x++) {
+
+            }
+        }
+
+        return 0;
+    }
+
+    private static boolean didWin(int[][] board) {
+
+    }
+
 }
