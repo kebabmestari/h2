@@ -19,5 +19,5 @@ public interface ServerCommunication extends Remote {
     void closeConnection(String plrname) throws RemoteException;
 
     // make move
-    boolean makeMove(String plrname, int[] coords) throws RemoteException;
+    int makeMove(String plrname, int[] coords, int side) throws RemoteException;
 }

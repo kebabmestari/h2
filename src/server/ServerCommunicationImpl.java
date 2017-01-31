@@ -50,7 +50,7 @@ public class ServerCommunicationImpl extends UnicastRemoteObject implements Serv
         if (gr == null) return false;
         if (!GameRoomService.roomHasRoom(gr)) return false;
         PlayerService.createPlayer(plrname, client, gr);
-
+        System.out.println(PlayerService.getPlayer(plrname).getName() + " created");
         return true;
     }
 
@@ -60,8 +60,11 @@ public class ServerCommunicationImpl extends UnicastRemoteObject implements Serv
     }
 
     @Override
-    public boolean makeMove(String plrname, int[] coords) throws RemoteException {
-        return PlayerService.getPlayerRoom(PlayerService.getPlayer(plrname)).
-                setPiece(coords[0], coords[1], Client.getSide());
+    public int makeMove(String plrname, int[] coords, int side) throws RemoteException {
+        Player plr = PlayerService.getPlayer(plrname);
+        System.out.println(plr.getName());
+        GameRoom gr = PlayerService.getPlayerRoom(plr);
+        System.out.println(gr.getName());
+        return gr.setPiece(coords[0], coords[1], side);
     }
 }

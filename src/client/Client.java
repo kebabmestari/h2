@@ -88,7 +88,12 @@ public class Client {
             exit(1);
         }
 
-        runGame(cin);
+        try {
+            runGame(cin);
+        } catch (Exception e) {
+            System.out.println("Received exception, exiting");
+            exit(0);
+        }
 
         System.out.println("Exiting..");
     }
@@ -105,7 +110,11 @@ public class Client {
         while(true) {
             System.out.println("\nJoin room: ");
             String roomName = cin.next();
-            if(comm.joinRoom(clientComm, name, roomName)) break;
+            if(comm.joinRoom(clientComm, name, roomName)) {
+                break;
+            } else {
+                System.err.println("Failed to join the room");
+            };
         }
         System.out.println("Joined the room");
     }
@@ -113,7 +122,7 @@ public class Client {
     /**
      * Main game
      */
-    public static void runGame(Scanner cin) {
+    public static void runGame(Scanner cin) throws Exception {
 
         while(!gameOn) {
             try {
@@ -127,18 +136,35 @@ public class Client {
         while (!(action = cin.next()).equals("q")) {
             if(isMyTurn()) {
                 int[] coords = parseMove(action);
+                if(coords == null || !validMove(coords[0], coords[1])) continue;
                 try {
                     // submit move into server
-                    if(comm.makeMove(name, coords)) {
-                        System.out.println("Move successfull");
+                    final int moveResult = comm.makeMove(name, coords, getSide());
+                    if(moveResult == 0) {
+                        System.out.println("Move successful");
                     } else {
-                        System.err.println("Move could not be made, is it your turn?");
+                        if(moveResult == 1)
+                            System.err.println("Invalid move");
+                        else if(moveResult == -1)
+                            System.err.println("Game is not on");
                     }
                 } catch (RemoteException e) {
                     e.printStackTrace();
                 }
             }
         }
+    }
+
+    /**
+     * Checks if given coordinates are valid aka not oob
+     * @param x
+     * @param y
+     * @return true if valid, false otherwise
+     */
+    private static  boolean validMove(int x, int y) {
+        if(x < 0 || x >= getBoard()[0].length || y < 0 || y > getBoard().length)
+            return false;
+        return true;
     }
 
     /**
@@ -152,8 +178,8 @@ public class Client {
         int[] result = new int[2];
         if(matcher.find()) {
             try {
-                result[0] = Integer.parseInt(matcher.group(0));
-                result[1] = Integer.parseInt(matcher.group(1));
+                result[0] = Integer.parseInt(matcher.group(1));
+                result[1] = Integer.parseInt(matcher.group(2));
             } catch (NumberFormatException e) {
                 System.err.println("Invalid input");
                 return null;

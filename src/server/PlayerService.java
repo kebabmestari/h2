@@ -67,8 +67,8 @@ public class PlayerService {
      * Add a new player
      * @param player
      */
-    private static void addPlayer(Player player) {
-        players.put(player, null);
+    private static void addPlayer(Player player, GameRoom room) {
+        players.put(player, room);
     }
 
     /**
@@ -88,7 +88,7 @@ public class PlayerService {
         Player newPlayer = new Player();
         newPlayer.setName(name);
         newPlayer.setComm(comm);
-        addPlayer(newPlayer);
+        addPlayer(newPlayer, gr);
         gr.addPlayer(newPlayer);
         return newPlayer;
     }

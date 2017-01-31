@@ -68,6 +68,7 @@ public class ClientCommunicationImpl extends UnicastRemoteObject implements Clie
      */
     @Override
     public void giveSide(int side) throws RemoteException {
+        System.out.println("Server gave us side: " + side);
         Client.setSide(side);
     }
 }

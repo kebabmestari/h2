@@ -8,17 +8,40 @@ public class RenderService {
 
     public static final char MSGC = '*';
 
+    // player symbols
+    public static final char PLR_1 = 'O';
+    public static final char PLR_2 = 'X';
+
+
     /**
      * Render the game sitation
      */
     public static void renderBoard() {
         int[][] board = Client.getBoard();
+        System.out.print("\n");
+        for (int i = 0; i < 13; i++) {
+            System.out.print('-');
+        }
         for (int y = 0; y < board.length; y++) {
             for (int x = 0; x < board[0].length; x++) {
-                System.out.print(" | " + board[y][x]);
+                char ch = '0';
+                int nro = board[y][x];
+                switch(nro) {
+                    case 1:
+                        ch = PLR_1;
+                        break;
+                    case 2:
+                        ch = PLR_2;
+                        break;
+                }
+                System.out.print(" | " + ch);
             }
-            System.out.print("\n");
+            System.out.print(" |\n");
         }
+        for (int i = 0; i < 13; i++) {
+            System.out.print('-');
+        }
+        System.out.print("\n");
     }
 
     /**
