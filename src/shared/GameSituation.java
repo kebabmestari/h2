@@ -1,7 +1,7 @@
 package shared;
 
 /**
- * Enumeration which represents game ending sitation
+ * Enumeration which represents game state altering sitation
  * and the related integer code
  * Created by samlinz on 26.1.2017.
  */
@@ -12,12 +12,17 @@ public enum GameSituation {
     YOU_LOST(2),
     GAME_START(10);
 
+    // the integer code
     private int code;
 
+    // constructor
     GameSituation(int code) {
         this.code = code;
     }
 
+    /**
+     * @return the integer code
+     */
     public int getCode() {
         return code;
     }

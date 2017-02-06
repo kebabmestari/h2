@@ -8,6 +8,7 @@ import java.util.List;
 import java.util.Map;
 
 /**
+ * Static methods for managing the players in the server
  * Created by adminpc on 21/1/2017.
  */
 public class PlayerService {
@@ -37,6 +38,11 @@ public class PlayerService {
         return null;
     }
 
+    /**
+     * Fetch the GameRoom the given player is currently signed in
+     * @param player Player object
+     * @return GameRoom object
+     */
     public static GameRoom getPlayerRoom(Player player) {
         return players.get(player);
     }
@@ -80,6 +86,14 @@ public class PlayerService {
         players.put(player, room);
     }
 
+    /**
+     * Create a client representation on the server
+     * and link it straight into a game room
+     * @param name Player name
+     * @param comm Player communication remote object stub
+     * @param gr GameRoom the player wishes to connect to
+     * @return reference to new Player object or null if something went wrong
+     */
     public static Player createPlayer(String name, ClientCommunication comm, GameRoom gr) {
         if(playerExists(name)) {
             System.err.println("Trying to create player named " + name + " failed. Exists already.");

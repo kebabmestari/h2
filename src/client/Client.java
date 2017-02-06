@@ -6,6 +6,7 @@ import shared.ServerCommunication;
 
 import java.net.MalformedURLException;
 import java.rmi.Naming;
+import java.rmi.Remote;
 import java.rmi.RemoteException;
 import java.util.Arrays;
 import java.util.Scanner;
@@ -29,7 +30,7 @@ public class Client {
     private static int[][] board;
 
     // game on flag
-    private static boolean gameOn = false;
+    private static volatile boolean gameOn = false;
     // turn flag
     private static boolean myTurn = false;
 
@@ -96,19 +97,34 @@ public class Client {
         }
 
         System.out.println("Exiting..");
+        exit(0);
     }
 
-    public static void joinRoom(Scanner cin) throws RemoteException {
+    /**
+     * Fetch open room names from the server and display them
+     * @param cin cin Scanner
+     * @throws RemoteException
+     */
+    public static void printOpenRooms(Scanner cin) throws RemoteException {
         System.out.println("Getting open rooms..");
         try {
             for(String room: comm.requestOpenRooms()) {
-                System.out.println(room);
+                System.out.println(" * " + room);
             }
         } catch (RemoteException e) {
             e.printStackTrace();
         }
+    }
+
+    /**
+     * Prompt a room name and attempt to join a room
+     * @param cin cin Scanner
+     * @throws RemoteException
+     */
+    public static void joinRoom(Scanner cin) throws RemoteException {
+        printOpenRooms(cin);
         while(true) {
-            System.out.println("\nJoin room: ");
+            System.out.println("Join room: ");
             String roomName = cin.next();
             if(comm.joinRoom(clientComm, name, roomName)) {
                 break;
@@ -116,14 +132,15 @@ public class Client {
                 System.err.println("Failed to join the room");
             };
         }
-        System.out.println("Joined the room");
     }
 
     /**
-     * Main game
+     * Main game loop
+     * Poll input and react to it
      */
     public static void runGame(Scanner cin) throws Exception {
 
+        // wait until both players have joined and the game is on
         while(!gameOn) {
             try {
                 Thread.sleep(10);
@@ -132,16 +149,19 @@ public class Client {
             }
         }
 
+        // poll user input, exit if q
         String action = "";
         while (!(action = cin.next()).equals("q")) {
             if(isMyTurn()) {
+                // parse given input with regex
                 int[] coords = parseMove(action);
                 if(coords == null || !validMove(coords[0], coords[1])) continue;
                 try {
-                    // submit move into server
+                    // submit move into server, get result
                     final int moveResult = comm.makeMove(name, coords, getSide());
                     if(moveResult == 0) {
-                        System.out.println("Move successful");
+                        if(gameOn)
+                            System.out.println("Move successful");
                     } else {
                         if(moveResult == 1)
                             System.err.println("Invalid move");
@@ -173,11 +193,13 @@ public class Client {
      * @return array of two ints which represent X and Y coordinates
      */
     public static int[] parseMove(String str) {
+        // 2x of 1 or two digits with a comma as a separator
         Pattern pattern = Pattern.compile("(\\d{1,2})\\s*,?\\s*(\\d{1,2})");
         Matcher matcher = pattern.matcher(str);
         int[] result = new int[2];
         if(matcher.find()) {
             try {
+                // extract the coordinates
                 result[0] = Integer.parseInt(matcher.group(1));
                 result[1] = Integer.parseInt(matcher.group(2));
             } catch (NumberFormatException e) {
@@ -217,18 +239,32 @@ public class Client {
         board = brd;
     }
 
+    /**
+     * @return true if it's this client's turn
+     */
     public static boolean isMyTurn() {
         return myTurn;
     }
 
+    /**
+     * Set the turn flag
+     * @param myTurn true if this client's turn
+     */
     public static void setTurn(boolean myTurn) {
         Client.myTurn = myTurn;
     }
 
+    /**
+     * @return this client's side ID
+     */
     public static int getSide() {
         return side;
     }
 
+    /**
+     * Set client's side ID
+     * @param side 1 or 2
+     */
     public static void setSide(int side) {
         Client.side = side;
     }

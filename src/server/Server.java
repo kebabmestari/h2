@@ -8,6 +8,10 @@ import java.rmi.RemoteException;
 import java.util.List;
 import java.util.Scanner;
 
+/**
+ * Server main class and application entry point
+ * For managing the server application and admin input
+ */
 public class Server {
 
     /**
@@ -16,9 +20,10 @@ public class Server {
      * @param args command line arguments
      */
     public static void main(String[] args) {
-        System.out.println("Server software");
 
+        System.out.println("Server software");
         System.out.println("Binding RMI");
+
         try {
             ServerCommunicationImpl comm = new ServerCommunicationImpl();
             Naming.rebind("comm", comm);
@@ -28,12 +33,17 @@ public class Server {
             e.printStackTrace();
         }
 
-        System.out.println("q quit, n new room");
+        System.out.println("q quit, n new room, r print rooms");
+
         Scanner cin = new Scanner(System.in);
+
+        // poll user input
         String text = "";
         while (!(text = cin.next()).equalsIgnoreCase("q")) {
             if (text.equalsIgnoreCase("n")) {
                 newRoom(cin);
+            }
+            if(text.equalsIgnoreCase("r")) {
                 printRooms();
             }
         }
@@ -42,6 +52,7 @@ public class Server {
             GameRoomService.closeRoom(gr, GameSituation.TERMINATION);
         }
         System.out.println("Bye");
+        System.exit(0);
     }
 
     /**
@@ -67,7 +78,6 @@ public class Server {
         }
         if (boardSize >= 3) {
             GameRoomService.createRoom(newRoomName, boardSize);
-            System.out.println("Room created");
         } else {
             System.out.println("Invalid board size");
             return;

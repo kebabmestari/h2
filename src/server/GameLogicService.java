@@ -8,10 +8,11 @@ import java.util.Random;
  */
 public class GameLogicService {
 
+    // maximum number of players
+    public static final int MAXPLAYERS = 2;
+
     // how many needed for victory
     public static final int howManyInRow = 3;
-
-    public static int MAXPLAYERS = 2;
 
     /**
      * Get the starting player id
@@ -33,6 +34,7 @@ public class GameLogicService {
 
         boolean emptySquaresLeft = false;
 
+        // iterate through each coordinate and check sitation
         for (int y = 0; y < board.length; y++) {
             for (int x = 0; x < board[0].length; x++) {
                 if(board[y][x] == 0)
@@ -43,11 +45,21 @@ public class GameLogicService {
             }
         }
 
+        // if no emptry squares left and nobody won it means a stalemate
         if(!emptySquaresLeft) return 3;
 
+        // otherwise neutral message
         return 0;
     }
 
+    /**
+     * Check individual coordinate's win sitation
+     * Scales up!
+     * @param board board array
+     * @param x x coordinate
+     * @param y y coordinate
+     * @return true if this coordinate 'won'
+     */
     private static boolean didWin(int[][] board, int x, int y) {
         int currentCode = board[y][x];
         if(currentCode == 0) return false;

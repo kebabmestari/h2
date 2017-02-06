@@ -18,13 +18,15 @@ public class RenderService {
      */
     public static void renderBoard() {
         int[][] board = Client.getBoard();
-        System.out.print("\n");
+        System.out.print(" ");
         for (int i = 0; i < 13; i++) {
             System.out.print('-');
         }
+        System.out.print("\n");
+
         for (int y = 0; y < board.length; y++) {
             for (int x = 0; x < board[0].length; x++) {
-                char ch = '0';
+                char ch = ' ';
                 int nro = board[y][x];
                 switch(nro) {
                     case 1:
@@ -38,6 +40,7 @@ public class RenderService {
             }
             System.out.print(" |\n");
         }
+        System.out.print(" ");
         for (int i = 0; i < 13; i++) {
             System.out.print('-');
         }

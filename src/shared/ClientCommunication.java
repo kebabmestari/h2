@@ -4,6 +4,7 @@ import java.rmi.Remote;
 import java.rmi.RemoteException;
 
 /**
+ * Remote interface, Server->Client communication
  * Created by samlinz on 25.1.2017.
  */
 public interface ClientCommunication extends Remote {

@@ -8,11 +8,12 @@ import java.util.Arrays;
 import java.util.List;
 
 /**
+ * Game room which has two players and a board with
+ * certain situation
+ * And related methods
  * Created by adminpc on 21/1/2017.
  */
 public class GameRoom {
-
-    public static final int MAXPLAYERS = 2;
 
     // players in room
     private List<Player> players = new ArrayList<>();
@@ -35,6 +36,7 @@ public class GameRoom {
     private int[][] board;
 
     // constructor
+    // create from GameRoomService instead
     GameRoom() {
     }
 
@@ -59,14 +61,14 @@ public class GameRoom {
      * @param player player object
      */
     void addPlayer(Player player) {
-        if (players.size() >= MAXPLAYERS) {
+        if (players.size() >= GameLogicService.MAXPLAYERS) {
             System.err.println("Player " + player.getName() + " tried to connect a full room");
             return;
         }
         System.out.println("Player " + player.getName() + " connected to " + name);
         players.add(player);
         // when enough players have joined, start the game
-        if (players.size() == MAXPLAYERS) {
+        if (players.size() == GameLogicService.MAXPLAYERS) {
             System.out.println("Room " + name + " filled, initializing new game");
             status = GameRoomStatus.INGAME;
             initGame();
@@ -89,15 +91,18 @@ public class GameRoom {
                 e.printStackTrace();
             }
         });
+        // decide starting player
         activePlayer = players.get(GameLogicService.getStartingPlayer());
         try {
             System.out.println(name + ": Giving active player " + activePlayer.getName() + " side id 1");
             activePlayer.getComm().giveSide(1);
+            activePlayer.setId(1);
             players.forEach((plr) -> {
                 if (plr != activePlayer) {
                     try {
                         System.out.println(name + ": Giving nonactive player " + plr.getName() + " side id 2");
                         plr.getComm().giveSide(2);
+                        plr.setId(2);
                     } catch (RemoteException e) {
                         e.printStackTrace();
                     }
@@ -106,7 +111,9 @@ public class GameRoom {
         } catch (RemoteException e) {
             e.printStackTrace();
         }
+        // send the initial board sitation
         sendBoard();
+        // send the starting turn
         sendTurn();
     }
 
@@ -126,7 +133,7 @@ public class GameRoom {
     }
 
     /**
-     * Send information about the new turn
+     * Send information about the turn
      */
     private void sendTurn() {
         try {
@@ -154,18 +161,36 @@ public class GameRoom {
     }
 
     /**
+     * Check if given coordinates are valid coordinates of this board
+     *
+     * @param x
+     * @param y
+     * @return true if valid, false otherwise
+     */
+    private boolean validCoordinates(int x, int y) {
+        if (x >= 0 && x < board[0].length && y >= 0 && y < board.length)
+            return true;
+        return false;
+    }
+
+    /**
      * Set a board piece to a number and check the game status
      *
      * @param x
      * @param y
      * @param code
-     * @return -1 if invalid state, 0 if successfull, 1 if invalid move
+     * @return -1 if invalid state, 0 if successful, 1 if invalid move
      */
     public int setPiece(int x, int y, int code) {
 
         System.out.println(name + ": Received move " + x + "," + y + " code " + code);
 
-        if(!(status == GameRoomStatus.INGAME)) return -1;
+        if (!validCoordinates(x, y)) {
+            System.err.println("Invalid coordinates");
+            return 1;
+        }
+
+        if (!(status == GameRoomStatus.INGAME)) return -1;
 
         if (getPiece(x, y) == 0) {
             if (code >= 1 && code <= 2) {
@@ -186,27 +211,31 @@ public class GameRoom {
         System.out.println(name + ": Checking for winner");
         int state = GameLogicService.getWinner(board);
 
-        if (state == 1 || state == 2){
+        if (state == 1 || state == 2) {
             System.out.println(name + ": Player " + state + " won");
             try {
-                int lost = state == 1 ? 1 : 0;
-                players.get(state).getComm().passCode(GameSituation.YOU_WON);
-                players.get(lost).getComm().passCode(GameSituation.YOU_LOST);
+                for (Player plr : players) {
+                    if (plr.getId() == state) {
+                        plr.getComm().passCode(GameSituation.YOU_WON);
+                    } else {
+                        plr.getComm().passCode(GameSituation.YOU_LOST);
+                    }
+                }
             } catch (RemoteException e) {
                 e.printStackTrace();
             }
         } else if (state == 3) {
             System.out.println(name + ": Ended in stalemate");
-                players.forEach((plr) -> {
-                    try {
-                        plr.getComm().passCode(GameSituation.STALEMATE);
-                    } catch (RemoteException e) {
-                        e.printStackTrace();
-                    }
-                });
+            players.forEach((plr) -> {
+                try {
+                    plr.getComm().passCode(GameSituation.STALEMATE);
+                } catch (RemoteException e) {
+                    e.printStackTrace();
+                }
+            });
         }
         // game ended
-        if(state > 0) {
+        if (state > 0) {
             status = GameRoomStatus.DONE;
         } else {
             System.out.println(name + " no winner, continuing");
@@ -245,6 +274,7 @@ public class GameRoom {
     }
 }
 
+// enum representing game room status
 enum GameRoomStatus {
     WAITING,
     INGAME,

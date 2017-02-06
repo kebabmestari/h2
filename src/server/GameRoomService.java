@@ -18,6 +18,7 @@ public class GameRoomService {
 
     /**
      * Remove a room from the list
+     *
      * @param room
      */
     public static void removeRoom(GameRoom room) {
@@ -26,6 +27,7 @@ public class GameRoomService {
 
     /**
      * Check if a room of given name exists
+     *
      * @param name name of the room
      * @return true if the room exists, false otherwise
      */
@@ -38,6 +40,7 @@ public class GameRoomService {
 
     /**
      * Close room
+     *
      * @param gr
      */
     public static void closeRoom(GameRoom gr, GameSituation code) {
@@ -55,6 +58,7 @@ public class GameRoomService {
 
     /**
      * Get if the room has room for more players to join or not
+     *
      * @param gr game room ref
      * @return true if there is more room
      */
@@ -64,6 +68,7 @@ public class GameRoomService {
 
     /**
      * Fetch a GameRoom ref by it's name identifier
+     *
      * @param name name of the room, case sensitive
      * @return GameRoom object if found, otherwise null
      */
@@ -78,7 +83,8 @@ public class GameRoomService {
 
     /**
      * Adds a player to a game
-     * @param gr GameRoom ref
+     *
+     * @param gr  GameRoom ref
      * @param plr Player ref
      */
     public static void addPlayerToRoom(GameRoom gr, Player plr) {
@@ -94,6 +100,7 @@ public class GameRoomService {
 
     /**
      * Add a new room
+     *
      * @param room GameRoom object
      */
     private static void addRoom(GameRoom room) {
@@ -102,7 +109,8 @@ public class GameRoomService {
 
     /**
      * Create a brand new room with the given configuration
-     * @param name name of the new room
+     *
+     * @param name      name of the new room
      * @param boardSize board dimension, same in both directions
      * @return reference to the new object
      */

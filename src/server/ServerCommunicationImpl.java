@@ -10,10 +10,13 @@ import java.util.ArrayList;
 import java.util.List;
 
 /**
+ * Implementation for the server remote object which the
+ * client end uses to pass information to the server
  * Created by samlinz on 24.1.2017.
  */
 public class ServerCommunicationImpl extends UnicastRemoteObject implements ServerCommunication {
 
+    // constructor
     public ServerCommunicationImpl() throws RemoteException {
         System.out.println("Remote server object created");
     }
@@ -54,11 +57,24 @@ public class ServerCommunicationImpl extends UnicastRemoteObject implements Serv
         return true;
     }
 
+    /**
+     * Close connection to the server
+     * @param plrname player name
+     * @throws RemoteException
+     */
     @Override
     public void closeConnection(String plrname) throws RemoteException {
 
     }
 
+    /**
+     * Make a move on the board
+     * @param plrname player name
+     * @param coords coordinates as two size array [x,y]
+     * @param side 1 or 2 which represents the player 'id' which again represents either X or O
+     * @return -1 for invalid state, 0 for no error or 1 for invalid move
+     * @throws RemoteException
+     */
     @Override
     public int makeMove(String plrname, int[] coords, int side) throws RemoteException {
         Player plr = PlayerService.getPlayer(plrname);
